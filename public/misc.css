@@ -1,0 +1,17 @@
+.sorting-filter {
+    width: 21rem;
+}
+
+.cover{
+    max-height: 300px;
+    width:100%
+}
+
+.review{
+    background-color: #ebf2eb;
+}
+
+.reviewed{
+    background-color: #f1f4f1;
+    border: none;
+}

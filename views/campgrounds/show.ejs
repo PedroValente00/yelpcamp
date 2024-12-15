@@ -1,0 +1,145 @@
+<% layout('templates/boilerplate') -%>
+<link rel="stylesheet" href="/starability-basic.css">
+<section class="row">
+<div class="col-lg-6">
+  <!-- MAP -->  
+  <script>
+    //used by showPageMap.js
+  const frontEndAccessToken = "<%- process.env.API_MAPBOX %>"
+  const geoLocation = JSON.parse(`<%-JSON.stringify(campground.geometry.coordinates)%>`);
+  const campName = `<%-JSON.stringify(campground.title)%>`;
+  const campLocation = `<%-JSON.stringify(campground.location)%>`;
+  </script>
+  <div id="map" class="show-map mb-4"></div>
+  <!-- MAP -->
+   <%# console.log(campground) %>
+    <div class="card mb-3">
+        <div id="yelpCarousel" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                <% if(campground.images.length){ %>
+                    <% campground.images.forEach((img, index) => {  %>
+                        <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+                    <img class="d-block w-100" style="height: 400px"
+                    src="<%= img.display %>" alt="">
+                    <div class="carousel-caption d-none d-md-block" style="margin-bottom: -2em">
+                        <a target="_blank" href="<%= img.url %>"
+                        class=" btn bg-primary-subtle p-2 ">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-up-right me-1" viewBox="0 0 16 16" style="vertical-align: -.125em;">
+                            <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"/>
+                            <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"/>
+                          </svg>See full size image</a>
+                        </div>
+                </div>
+                <% }) %>
+                <% }else{ %>
+                    <div class="carousel-item active">
+                        <img class="d-block w-100" style="max-height: 500px"
+                         src="https://res.cloudinary.com/dwnlevtnl/image/upload/v1727777603/YelpCamp/no-image.jpg" alt="">
+                    <% } %>
+                </div>
+                <% if(campground.images.length > 1){ %>
+                <a class="carousel-control-prev" href="#yelpCarousel" role="button" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon bg-secondary rounded-1" aria-hidden="true"></span>
+                  <!-- <span class="sr-only">Previous</span> -->
+                </a>
+                <a class="carousel-control-next" href="#yelpCarousel" role="button" data-bs-slide="next">
+                  <span class="carousel-control-next-icon bg-secondary rounded-1" aria-hidden="true"></span>
+                  <!-- <span class="sr-only">Next</span> -->
+                </a>
+                <% } %>
+              </div>
+        <div class="card-body">
+            <h5 class="card-title"><%= campground.title %></h5>
+            <p class="card-text"><%= campground.description %></p>
+        </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item text-muted"><%= campground.location %></li>
+                <% if(campground.averageRating){ %>
+                <li class="list-group-item">Average rating: <%= Math.round(campground.averageRating * 10) / 10 %> 
+                   <% }else{ %>
+                    <li class="list-group-item">No reviews yet
+                    <% } %>
+                <div class="card-title starability-result" data-rating="<%= Math.floor(campground.averageRating) %>">
+                  Rated: <%= campground.averageRating %> stars
+                </div>
+                </li>
+                <!-- <p class="card-title starability-result" data-rating="<%# review.rating %>">
+                  Rated: <%# review.rating %> stars
+                </p> -->
+                <li class="list-group-item">Submitted by <%= campground.author.username %></li>
+              <li class="list-group-item"><%= campground.price %>$/night</li>
+            </ul>
+            <% if( currentUser && currentUser.toString() === campground.author.toString() ) { %>
+            <div class="card-body">
+                <a class="card-link btn btn-info" href="/campgrounds/<%= campground._id %>/edit">Edit campground</a>
+                <form class="d-inline" action="/campgrounds/<%= campground._id %>?_method=DELETE" method="POST">
+                    <button class="btn btn-danger">Delete campground</button>
+                </form>
+            </div>
+            <% } %>
+            <div class="card-footer text-body-secondary">
+              <% const created = new Date(campground.creationDate) %>
+                Created on <%= created.toDateString() %>
+              </div>
+        </div>   
+    </div>
+    <div class="col">
+        <% if(!campground.reviews.length){ %>
+            <div class="card mb-5">
+              <div class="card-body">
+                <h5 class="card-title">This campground has no reviews yet.</h5>
+                <p class="card-text">Be the first to leave one!</p>
+              </div>
+            </div>
+          <% } %>
+
+        <% if (currentUser){ %>
+        <h2 class="mb-2">Leave a review</h2>
+        <form action="/campgrounds/<%=campground._id%>/reviews" method="POST" class="mb-5 p-3 review needs-validation" novalidate>
+            <div class="mb-3">
+                <fieldset class="starability-basic">
+                    <legend>Score:</legend>
+                    <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating." />
+                    <input type="radio" id="first-rate1" name="review[rating]" value="1" checked/>
+                    <label for="first-rate1" title="Horrible">1 star</label>
+                    <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+                    <label for="first-rate2" title="Bad">2 stars</label>
+                    <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+                    <label for="first-rate3" title="Okay">3 stars</label>
+                    <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+                    <label for="first-rate4" title="Good">4 stars</label>
+                    <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+                    <label for="first-rate5" title="Amazing">5 stars</label>
+                  </fieldset>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="body">Review</label>
+                <textarea class="form-control" name="review[body]" id="body" cols="30" rows="6" required></textarea>
+                <div class="valid-feedback">Looks good!</div>
+                <div class="invalid-feedback">Please write something.</div>
+            </div>
+            <button class="btn btn-success">Submit</button>
+        </form>
+        <% } %>
+        <% for(const review of campground.reviews){ %>
+            <div class="card mb-3 p-1 reviewed">
+                <div class="card-body">
+                    <p class="card-title starability-result" data-rating="<%= review.rating %>">
+                        Rated: <%= review.rating %> stars
+                      </p>
+                    <h6 class="card-subtitle mb-2 text-muted">By <%= review.author.username %></h6>
+                    <p class="card-text">Review: <%= review.body %></p>
+                    <% if(currentUser && currentUser.toString() === review.author.toString() ) { %>
+                    <form action="/campgrounds/<%= campground._id %>/reviews/<%= review._id %>?_method=DELETE" 
+                        method="POST">
+                    <button class="btn btn-sm btn-danger">Delete</button>
+                </form>
+            <% } %>    
+            </div>
+            </div>
+            <% } %>
+    </div>
+
+    </section>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.js'></script>
+    <script src="/scripts/showPageMap.js"></script>

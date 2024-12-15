@@ -1,0 +1,50 @@
+<% layout('templates/boilerplate') -%>
+
+<div class="row">
+<h1 class="text-center">New campground</h1>
+<div class="col-md-6 offset-md-3">
+    <form action="/campgrounds" method="POST" 
+    class="mb-3 needs-validation" novalidate enctype="multipart/form-data">
+        
+        <section class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" name="campground[title]" id="title" placeholder="Title" required class="form-control">
+        </section>
+        <section class="mb-3">
+            <label for="location" class="form-label">Location</label>
+            <input type="text" name="campground[location]" id="location" placeholder="Location" class="form-control" required>
+            
+            </section>
+
+        <section class="mb-3">
+            <label for="price" class="form-label">Campground price</label>
+                <div class="input-group">
+                <span class="input-group-text" id="price-label">$</span>
+                <input type="text" class="form-control" placeholder="0.00" aria-label="Price" aria-describedby="price-label" id="price" name="campground[price]" required>
+            </div>
+          </section>
+        
+        <section class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea name="campground[description]" id="description" placeholder="Description" class="form-control" required rows="6"></textarea>
+            </section>
+
+            <div class="mb-3">
+                <label for="images" class="form-label">
+                    <p class="d-inline-block">Upload one or more pictures (up to 10).</p>
+                    <p class="d-inline-block mb-0">Formats allowed are png, jpg, jpeg and size limit is 10MB per picture.</p>
+                </label>
+                <input class="form-control" type="file" id="images" required multiple name="images">
+                <div class="invalid-feedback fileError">You must upload at least 1 picture, up to a maximum of 10. </div>
+              </div>
+
+        <section class="mb-3">
+            <button class="btn btn-success">Create campground</button>
+        </section>
+    </form>
+    
+    <footer>
+        <a href="/campgrounds">Back to campgrounds</a>
+    </footer>
+</div>
+</div>

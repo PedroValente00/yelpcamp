@@ -1,0 +1,81 @@
+<% layout('templates/boilerplate') -%>
+<link rel="stylesheet" href="/starability-basic.css">
+<!-- MAP -->
+<script src='https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.js'></script>
+<% const geoStuff = campgrounds.map(c => ({title: c.title, geometry: c.geometry})) %>
+<script>
+    //used by clusterMap.js
+    const frontEndAccessToken = "<%- process.env.API_MAPBOX %>" 
+    const geoDataRaw = `<%-JSON.stringify(campgrounds.map(c => ({ 
+        geometry: c.geometry,
+        properties: {id: c._id, title: c.title, rating: c.averageRating, price: c.price}
+        })))%>`
+    const geoData = {features: JSON.parse(geoDataRaw)} 
+</script>
+<div id="map" class="cluster-map mb-l-0 mb-md-1"></div>
+<script src="/scripts/clusterMap.js"></script>
+<!-- /MAP -->
+
+<form class="form-inline d-flex mt-2 mt-md-3 mb-0 flex-column flex-sm-row" action="/campgrounds" method="GET">
+    <input class="form-control mb-1 mb-sm-0" type="search" placeholder="Search for a name, location or description" aria-label="Search"
+    id="q" name="q">
+    <button class="btn btn-outline-success" type="submit">Search</button>
+  </form>
+  <% if(campgrounds.length){ %>
+  <div class="sorting-filter input-group mt-2 mt-md-3 ms-0 me-auto ms-md-auto me-md-0">
+    <label for="sort" class="input-group-text">
+    <!-- <span class="input-group-text"> -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5m-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5"/>
+          </svg>
+        <!-- </span> -->
+        </label>
+    <select class="form-select form-control" aria-label="Sorting preference" name="sort" id="sort">
+        <option value="older" selected>Sorting by date: oldest first</option>
+        <option value="newer">Sorting by date: newest first </option>
+        <option value="rating">Sorting by rating: highest first</option>
+        <option value="price">Sorting by price: lowest first </option>
+      </select>
+    </div>
+    
+    <div class="campgrounds">
+    <% for (campground of campgrounds){ %>
+        <div class="card mb-3">
+            <div class="row">
+                <div class="col-md-4">
+                    <% if(campground.images.length){ %>
+                    <img class="cover" alt="picture" src="<%= campground.images[0].url %>">
+                    <% }else{ %>
+                        <img class="cover" alt="picture"
+                        src="https://res.cloudinary.com/dwnlevtnl/image/upload/v1727777603/YelpCamp/no-image.jpg">
+                    <% } %>
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title"><%= campground.title %></h5>
+                        <% if(campground.averageRating){ %>
+                            <input class="rating" type="hidden" value="<%= Math.floor(campground.averageRating) %>">
+                           <div class="card-title starability-result" data-rating="<%= Math.floor(campground.averageRating) %>">
+                               Rated: <%= campground.averageRating %> stars
+                            </div>
+                            <% }else{ %>
+                                <input class="rating" type="hidden" value="0">
+                                <% } %>
+                        <p class="card-text text-muted"><span class="price"><%= campground.price %></span>$/night</p>
+                        <p class="card-text"><%= campground.description %></p>
+                        <p class="dateCreated d-none"><%= campground.creationDate %></p>
+                        <p class="card-text"><small class="text-muted"><%= campground.location %></small></p>
+                        <a href="campgrounds/<%= campground._id %>" class="btn btn-primary">View <%= campground.title %></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% } %>
+    </div>
+    <% }else{ %>
+        <div class="mt-3 alert alert-warning" role="alert">
+            No campgrounds found.
+        </div>
+    <% } %>
+
+<script type="text/javascript" src="/scripts/sortOrder.js"></script>

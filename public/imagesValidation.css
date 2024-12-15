@@ -1,0 +1,9 @@
+.uploadedImages{
+    box-shadow: 0em 0em 5px 1px #0080009c;
+    cursor:pointer;
+}
+
+.marked4deletion{
+    filter:grayscale(50%) drop-shadow(0px 0px 10px black);
+    box-shadow: 0em 0em 10px 1px red
+}
