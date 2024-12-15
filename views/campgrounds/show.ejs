@@ -3,6 +3,7 @@
 <section class="row">
 <div class="col-lg-6">
   <!-- MAP -->  
+   <% console.log(campground) %>
   <script>
     //used by showPageMap.js
   const frontEndAccessToken = "<%- process.env.API_MAPBOX %>"
@@ -12,7 +13,6 @@
   </script>
   <div id="map" class="show-map mb-4"></div>
   <!-- MAP -->
-   <%# console.log(campground) %>
     <div class="card mb-3">
         <div id="yelpCarousel" class="carousel slide" data-ride="carousel">
             <div class="carousel-inner">
@@ -63,9 +63,6 @@
                   Rated: <%= campground.averageRating %> stars
                 </div>
                 </li>
-                <!-- <p class="card-title starability-result" data-rating="<%# review.rating %>">
-                  Rated: <%# review.rating %> stars
-                </p> -->
                 <li class="list-group-item">Submitted by <%= campground.author.username %></li>
               <li class="list-group-item"><%= campground.price %>$/night</li>
             </ul>

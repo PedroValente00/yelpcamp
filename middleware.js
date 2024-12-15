@@ -28,7 +28,6 @@ module.exports.validateCampground = (req, res, next) => {
     if (error) {
         const msg = error.details.map(el => el.message).join(",");
         throw new ExpressError(msg, 400)
-        // console.log("gotta remove this from the frontend")
     } next();
 }
 
