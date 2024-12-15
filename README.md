@@ -1,6 +1,7 @@
 # YelpCamp
 
 This is a project called YelpCamp, based on Colt Steele's [Udemy course](https://www.udemy.com/course/the-web-developer-bootcamp).
+
 Watch the live project demo here: https://yelpcamp-ei7h.onrender.com
 
 It's being continuously integrated/deployed from Github to [Render](https://render.com/). Because it's being hosted on the free tier, the server goes to sleep after 15 minutes of no traffic. The first time you access it during its down time, it will take a minute to spin the disk back up. Please have a bit of patience.

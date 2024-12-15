@@ -51,22 +51,22 @@ const connectSrcUrls = [
     "https://events.mapbox.com/",
 ];
 
-// app.use(helmet({
-//       contentSecurityPolicy: {
-//         directives: {
-//             scriptSrc: ["'unsafe-inline'", "'self'", ...allowedScripts],
-//             styleSrc: ["'self'", "'unsafe-inline'", ...allowedStyles],
-//             connectSrc: ["'self'", ...connectSrcUrls],
-//             imgSrc: ["'self'", "blob:", "data:", "https://images.unsplash.com/", "https://res.cloudinary.com/dwnlevtnl/"],
-//             workerSrc: ["'self'", "blob:"],
-//             fontSrc: "'self'",
-//             defaultSrc: [],
-//             objectSrc: [],
-//         },
-//       },
-//       referrerPolicy: {policy: ["same-origin"]}
-//     })
-//   );
+app.use(helmet({
+      contentSecurityPolicy: {
+        directives: {
+            scriptSrc: ["'unsafe-inline'", "'self'", ...allowedScripts],
+            styleSrc: ["'self'", "'unsafe-inline'", ...allowedStyles],
+            connectSrc: ["'self'", ...connectSrcUrls],
+            imgSrc: ["'self'", "blob:", "data:", "https://images.unsplash.com/", "https://res.cloudinary.com/dwnlevtnl/"],
+            workerSrc: ["'self'", "blob:"],
+            fontSrc: "'self'",
+            defaultSrc: [],
+            objectSrc: [],
+        },
+      },
+      referrerPolicy: {policy: ["same-origin"]}
+    })
+  );
 
 app.use(express.urlencoded({ extended: true })) 
 app.use(methodOverride("_method"))
